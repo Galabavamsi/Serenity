@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomOutlinedButton extends StatelessWidget{
@@ -6,9 +5,9 @@ class CustomOutlinedButton extends StatelessWidget{
   final VoidCallback onPressed;
   final String data;
 
-  const CustomOutlinedButton({Key?key,
+  const CustomOutlinedButton({super.key,
     required this.onPressed,
-    required this.data}): super(key: key);
+    required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +21,7 @@ class CustomOutlinedButton extends StatelessWidget{
           color: Colors.pink.shade200,
           borderRadius: BorderRadius.circular(25)
         ),
-        child: OutlinedButton(onPressed: onPressed, child:Text(data,style: TextStyle(
+        child: OutlinedButton(onPressed: onPressed, child:Text(data,style: const TextStyle(
             fontSize: 20,
             fontFamily: 'SecondFont'
         ),))

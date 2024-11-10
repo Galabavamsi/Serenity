@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:serenity_app/Screens/first_screen.dart';
 import '../Custom_widgets/custom_textfield.dart';
@@ -8,6 +7,8 @@ class create_account extends StatelessWidget{
   var nameController = TextEditingController();
   var ageController = TextEditingController();
   var passwordController = TextEditingController();
+
+  create_account({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,18 +34,18 @@ class create_account extends StatelessWidget{
                     color: Colors.pink.shade50,
                   ),
                 ),
-                SizedBox(height: 20,),
-                Text('Create Account',style: TextStyle(
+                const SizedBox(height: 20,),
+                const Text('Create Account',style: TextStyle(
                   fontSize: 40,
                   fontFamily: 'SecondFont',
 
                 ),),
-                SizedBox(height: 20,),
+                const SizedBox(height: 20,),
                 CustomTextfield(Controller: nameController, hintText: 'Name'),
-                SizedBox(height: 20,),
+                const SizedBox(height: 20,),
                 CustomTextfield(Controller: ageController, hintText: 'Enter your age'),
-                SizedBox(height: 20,),
-                Container(
+                const SizedBox(height: 20,),
+                SizedBox(
                   width: 280,
                   child: TextField(
                     decoration: InputDecoration(
@@ -59,15 +60,15 @@ class create_account extends StatelessWidget{
 
                   ),
                 ),
-                SizedBox(height: 20,),
-                Container(
+                const SizedBox(height: 20,),
+                SizedBox(
                   width: 200,
                   child: ElevatedButton(onPressed: (){
                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
-                      return first_screen();
+                      return const first_screen();
                     }));
                   },
-                      child: Text('Create account',style: TextStyle(
+                      child: const Text('Create account',style: TextStyle(
                           fontSize: 20,
                           fontFamily: 'SecondFont'
                       ),)),

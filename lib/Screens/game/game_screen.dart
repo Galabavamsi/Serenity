@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 class BubblePopGameScreen extends StatefulWidget {
+  const BubblePopGameScreen({super.key});
+
   @override
   _BubblePopGameScreenState createState() => _BubblePopGameScreenState();
 }
@@ -52,7 +54,7 @@ class _BubblePopGameScreenState extends State<BubblePopGameScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Bubble Pop",style: TextStyle(
+        title: const Text("Bubble Pop",style: TextStyle(
             fontFamily: 'SecondFont'
         ),),
         backgroundColor: Colors.pink.shade100,
@@ -66,7 +68,7 @@ class _BubblePopGameScreenState extends State<BubblePopGameScreen> {
               right: 20,
               child: Text(
                 "Score: $score",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,fontFamily: 'SecondFont'),
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold,fontFamily: 'SecondFont'),
               ),
             ),
           ],

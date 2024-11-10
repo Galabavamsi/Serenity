@@ -1,12 +1,13 @@
 // This is the first screen after the create or sign in screen.In this there is logic of bottom navigation bar
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:serenity_app/Screens/home_screen.dart';
 import 'package:serenity_app/Screens/list_main_screen.dart';
 import 'package:serenity_app/Screens/profile_main_screen.dart';
 
 class first_screen extends StatefulWidget{
+  const first_screen({super.key});
+
 
   @override
   State<first_screen> createState() => _first_screenState();
@@ -15,9 +16,9 @@ class first_screen extends StatefulWidget{
 class _first_screenState extends State<first_screen> {
   int _currentIndex = 0;
   final List<Widget> _pages = [
-    HomeScreen(),
-    ListScreen(),
-    ProfileScreen(),
+    const HomeScreen(),
+    const ListScreen(),
+    const ProfileScreen(),
   ];
 
   @override
@@ -34,16 +35,16 @@ class _first_screenState extends State<first_screen> {
         currentIndex: _currentIndex,
         backgroundColor: Colors.pink.shade100,
         selectedFontSize: 18,
-        selectedLabelStyle: TextStyle(
+        selectedLabelStyle: const TextStyle(
           fontFamily: 'SecondFont',
         ),
         unselectedItemColor: Colors.black,
-        unselectedLabelStyle: TextStyle(
+        unselectedLabelStyle: const TextStyle(
             fontFamily: 'SecondFont'
         ),
         selectedItemColor: Colors.pink,
         iconSize: 30,
-        unselectedIconTheme: IconThemeData(
+        unselectedIconTheme: const IconThemeData(
           size: 24,
         ),
         unselectedFontSize: 14,

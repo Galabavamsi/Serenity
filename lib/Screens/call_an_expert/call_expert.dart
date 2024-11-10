@@ -1,7 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CallExpert extends StatelessWidget{
+  const CallExpert({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +13,7 @@ class CallExpert extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pink.shade50,
-        title: Text('Call an Expert',style: TextStyle(
+        title: const Text('Call an Expert',style: TextStyle(
             fontFamily: 'SecondFont'
         ),),
       ),
@@ -23,7 +24,7 @@ class CallExpert extends StatelessWidget{
             margin: const EdgeInsets.only(top: 10),
             width: screenWidth*0.9,
             height: screenHeight*0.9,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(topLeft: Radius.circular(25),topRight: Radius.circular(25)),
               boxShadow: [
@@ -37,7 +38,7 @@ class CallExpert extends StatelessWidget{
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Column(
+                const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text('Dr.Gajanand',style: TextStyle(
@@ -51,7 +52,7 @@ class CallExpert extends StatelessWidget{
                   ],
                 ),
                 SizedBox(height: screenHeight*0.02,),
-                Column(
+                const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text('Dr.X',style: TextStyle(
@@ -65,7 +66,7 @@ class CallExpert extends StatelessWidget{
                   ],
                 ),
                 SizedBox(height: screenHeight*0.02,),
-                Column(
+                const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text('Dr.Y',style: TextStyle(
@@ -79,7 +80,7 @@ class CallExpert extends StatelessWidget{
                   ],
                 ),
                 SizedBox(height: screenHeight*0.02,),
-                Column(
+                const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text('Dr.Z',style: TextStyle(

@@ -1,10 +1,11 @@
 // This is the list or diary screen
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:serenity_app/Custom_widgets/custom_ListTile.dart';
 
 class ListScreen extends StatelessWidget{
+  const ListScreen({super.key});
+
 
 
   @override
@@ -14,7 +15,7 @@ class ListScreen extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pink.shade50,
-        title: Text('List',style: TextStyle(
+        title: const Text('List',style: TextStyle(
             fontFamily: 'SecondFont'
         ),),
       ),
@@ -26,7 +27,7 @@ class ListScreen extends StatelessWidget{
               margin: const EdgeInsets.only(top:50),
               width: screenWidth*0.9,
               height: screenHeight*0.8,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(25),topRight: Radius.circular(25)),
                 boxShadow: [
@@ -37,7 +38,7 @@ class ListScreen extends StatelessWidget{
                   ),
                 ],
               ),
-              child: Column(
+              child: const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CustomListTile(),
