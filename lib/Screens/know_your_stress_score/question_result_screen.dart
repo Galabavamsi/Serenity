@@ -1,11 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:serenity_app/Custom_widgets/custom_outlinedButton.dart';
-import 'package:serenity_app/Screens/home_screen.dart';
 import 'package:serenity_app/provider/StressCalculator.dart';
 
 class Result extends StatelessWidget{
+  const Result({super.key});
+
   @override
   Widget build(BuildContext context) {
 
@@ -41,7 +40,7 @@ class Result extends StatelessWidget{
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.pink.shade50,
-          title: Text('Know your Stress Score',style: TextStyle(
+          title: const Text('Know your Stress Score',style: TextStyle(
               fontFamily: 'SecondFont'
           ),),
         ),
@@ -52,7 +51,7 @@ class Result extends StatelessWidget{
               margin: const EdgeInsets.only(top: 10),
               width: screenWidth*0.9,
               height: screenHeight*0.9,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(25),topRight: Radius.circular(25)),
                 boxShadow: [
@@ -68,13 +67,13 @@ class Result extends StatelessWidget{
                   children: [
                     Container(
                       margin:  EdgeInsets.only(top: top,left: left),
-                      child: Text('Result',style: TextStyle(
+                      child: const Text('Result',style: TextStyle(
                           fontSize: 40,
                           fontFamily: 'SecondFont'
                       ),),
                     ),
                     SizedBox(height: screenHeight*0.02,),
-                    Text('Stress range : $stressRange',style: TextStyle(
+                    Text('Stress range : $stressRange',style: const TextStyle(
                         fontFamily: 'ThirdFont',
                         fontSize: 27,
                       fontWeight: FontWeight.bold

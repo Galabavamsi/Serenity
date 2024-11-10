@@ -1,7 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FaceTracking extends StatelessWidget{
+  const FaceTracking({super.key});
+
 
 
 
@@ -14,7 +15,7 @@ class FaceTracking extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pink.shade50,
-        title: Text('Know your Mood',style: TextStyle(
+        title: const Text('Know your Mood',style: TextStyle(
             fontFamily: 'SecondFont'
         ),),
       ),
@@ -25,7 +26,7 @@ class FaceTracking extends StatelessWidget{
             margin: const EdgeInsets.only(top: 10),
             width: screenWidth*0.9,
             height: screenHeight*0.9,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(topLeft: Radius.circular(25),topRight: Radius.circular(25)),
               boxShadow: [
@@ -36,7 +37,7 @@ class FaceTracking extends StatelessWidget{
                 ),
               ],
             ),
-            child: Center(child: Text('Face tracker here',style: TextStyle(
+            child: const Center(child: Text('Face tracker here',style: TextStyle(
               fontSize:40,
             ),)),
           ),

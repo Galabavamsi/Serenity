@@ -1,8 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Habits extends StatelessWidget{
+  const Habits({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +14,7 @@ class Habits extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pink.shade50,
-        title: Text('Habits',style: TextStyle(
+        title: const Text('Habits',style: TextStyle(
             fontFamily: 'SecondFont'
         ),),
       ),
@@ -24,7 +25,7 @@ class Habits extends StatelessWidget{
             margin: const EdgeInsets.only(top: 10),
             width: screenWidth*0.9,
             height: screenHeight*0.9,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(topLeft: Radius.circular(25),topRight: Radius.circular(25)),
               boxShadow: [
@@ -39,13 +40,13 @@ class Habits extends StatelessWidget{
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('Stress Reducing Habits',style: TextStyle(
+                const Text('Stress Reducing Habits',style: TextStyle(
                     fontSize: 29,
                     fontFamily: 'ThirdFont',
                   fontWeight: FontWeight.bold
                 ),),
                 SizedBox(height: screenHeight*0.03,),
-                ListTile(
+                const ListTile(
                   leading: FaIcon(FontAwesomeIcons.running,
                     color: Colors.green,
                     size: 25,
@@ -56,7 +57,7 @@ class Habits extends StatelessWidget{
                   ),),
                 ),
                 SizedBox(height: screenHeight*0.01,),
-                ListTile(
+                const ListTile(
                   leading: FaIcon(FontAwesomeIcons.spa,
                     color: Colors.green,
                     size: 25,
@@ -67,7 +68,7 @@ class Habits extends StatelessWidget{
                   ),),
                 ),
                 SizedBox(height: screenHeight*0.01,),
-                ListTile(
+                const ListTile(
                   leading: FaIcon(FontAwesomeIcons.clock,
                     color: Colors.green,
                     size: 25,
@@ -78,7 +79,7 @@ class Habits extends StatelessWidget{
                   ),),
                 ),
                 SizedBox(height: screenHeight*0.01,),
-                ListTile(
+                const ListTile(
                   leading: FaIcon(FontAwesomeIcons.bed,
                     color: Colors.green,
                     size: 25,
@@ -89,7 +90,7 @@ class Habits extends StatelessWidget{
                   ),),
                 ),
                 SizedBox(height: screenHeight*0.01,),
-                ListTile(
+                const ListTile(
                   leading: FaIcon(FontAwesomeIcons.book,
                     color: Colors.green,
                     size: 25,
@@ -100,7 +101,7 @@ class Habits extends StatelessWidget{
                   ),),
                 ),
                 SizedBox(height: screenHeight*0.01,),
-                ListTile(
+                const ListTile(
                   leading: FaIcon(FontAwesomeIcons.heart,
                     color: Colors.green,
                     size: 25,
@@ -111,7 +112,7 @@ class Habits extends StatelessWidget{
                   ),),
                 ),
                 SizedBox(height: screenHeight*0.01,),
-                ListTile(
+                const ListTile(
                   leading: FaIcon(FontAwesomeIcons.tree,
                     color: Colors.green,
                     size: 25,

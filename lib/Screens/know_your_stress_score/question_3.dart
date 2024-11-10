@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:serenity_app/Screens/know_your_stress_score/question_4.dart';
@@ -8,6 +7,8 @@ import '../../provider/StressCalculator.dart';
 
 
 class Question3 extends StatelessWidget{
+  const Question3({super.key});
+
 
 
 
@@ -23,7 +24,7 @@ class Question3 extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pink.shade50,
-        title: Text('Know your Stress Score',style: TextStyle(
+        title: const Text('Know your Stress Score',style: TextStyle(
             fontFamily: 'SecondFont'
         ),),
       ),
@@ -35,7 +36,7 @@ class Question3 extends StatelessWidget{
               margin: const EdgeInsets.only(top: 10),
               width: screenWidth*0.9,
               height: screenHeight*0.9,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(25),topRight: Radius.circular(25)),
                 boxShadow: [
@@ -50,13 +51,13 @@ class Question3 extends StatelessWidget{
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    child: Text('Question 3',style: TextStyle(
+                    child: const Text('Question 3',style: TextStyle(
                         fontSize: 35,
                         fontFamily: 'SecondFont'
                     ),),
                   ),
                   SizedBox(height: screenHeight*0.02,),
-                  Text('How often do you feel a persistent sense of fatigue, even after rest?',
+                  const Text('How often do you feel a persistent sense of fatigue, even after rest?',
                     style: TextStyle(
                       fontFamily: 'ThirdFont',
                       fontSize: 23,
@@ -86,7 +87,7 @@ class Question3 extends StatelessWidget{
                   SizedBox(height: screenHeight*0.02,),
                   CustomOutlinedButton(onPressed: (){
                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
-                      return Question4();
+                      return const Question4();
                     }));
                   }, data: 'Next')
                 ],

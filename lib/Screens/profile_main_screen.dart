@@ -1,10 +1,11 @@
 // This is the profile screen
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:serenity_app/Custom_widgets/custom_outlinedButton.dart';
 
 class ProfileScreen extends StatelessWidget{
+  const ProfileScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
 
@@ -14,7 +15,7 @@ class ProfileScreen extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pink.shade50,
-        title: Text('Profile',style: TextStyle(
+        title: const Text('Profile',style: TextStyle(
             fontFamily: 'SecondFont'
         ),),
       ),
@@ -26,7 +27,7 @@ class ProfileScreen extends StatelessWidget{
               margin: const EdgeInsets.only(top:50),
               width: screenWidth*0.9,
               height: screenHeight*0.8,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(25),topRight: Radius.circular(25)),
                 boxShadow: [
@@ -48,7 +49,7 @@ class ProfileScreen extends StatelessWidget{
                         color: Colors.pink.shade50,
                       ),
                     ),
-                    SizedBox(height: 20,),
+                    const SizedBox(height: 20,),
                     CustomOutlinedButton(onPressed: (){}, data: 'Edit Profile',),
                     CustomOutlinedButton(onPressed: (){}, data: 'Stress Analysis',),
                     CustomOutlinedButton(onPressed: (){}, data: 'Log Out',),

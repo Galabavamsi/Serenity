@@ -1,6 +1,5 @@
 // This is the home widget screen
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:serenity_app/Screens/call_an_expert/call_expert.dart';
 import 'package:serenity_app/Screens/habits/habits.dart';
@@ -10,6 +9,8 @@ import 'package:serenity_app/Screens/self_care/self_care.dart';
 import '../Custom_widgets/custom_outlinedButton.dart';
 
 class HomeScreen extends StatelessWidget{
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -17,7 +18,7 @@ class HomeScreen extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pink.shade50,
-        title: Text('SERENITY',style: TextStyle(
+        title: const Text('SERENITY',style: TextStyle(
             fontFamily: 'SecondFont'
         ),),
       ),
@@ -29,7 +30,7 @@ class HomeScreen extends StatelessWidget{
               margin: const EdgeInsets.only(top: 50),
               width: screenWidth*0.9,
               height: screenHeight*0.8,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(25),topRight: Radius.circular(25)),
                 boxShadow: [
@@ -45,27 +46,27 @@ class HomeScreen extends StatelessWidget{
                 children: [
                   CustomOutlinedButton(onPressed: (){
                     Navigator.push(context, MaterialPageRoute(builder: (context){
-                      return Question1();
+                      return const Question1();
                     }));
                   }, data: 'Know Your Stress score'),
                   CustomOutlinedButton(onPressed: (){
                     Navigator.push(context, MaterialPageRoute(builder: (context){
-                      return FaceTracking();
+                      return const FaceTracking();
                     }));
                   }, data: 'Know Your Mood'),
                   CustomOutlinedButton(onPressed: (){
                     Navigator.push(context, MaterialPageRoute(builder: (context){
-                      return Habits();
+                      return const Habits();
                     }));
                   }, data: 'Habits'),
                   CustomOutlinedButton(onPressed: (){
                     Navigator.push(context, MaterialPageRoute(builder: (context){
-                      return SelfCare();
+                      return const SelfCare();
                     }));
                   }, data: 'Self care'),
                   CustomOutlinedButton(onPressed: (){
                     Navigator.push(context, MaterialPageRoute(builder: (context){
-                      return CallExpert();
+                      return const CallExpert();
                     }));
                   }, data: 'Call An Expert'),
                 ],

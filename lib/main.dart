@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: welcome_screen(),
+        home: const welcome_screen(),
       ),
     );
   }
@@ -36,6 +36,8 @@ class logIn_screen extends StatelessWidget{
 
   var nameController = TextEditingController();
   var passwordController = TextEditingController();
+
+  logIn_screen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -57,16 +59,16 @@ class logIn_screen extends StatelessWidget{
                     color: Colors.pink.shade50,
                   ),
                 ),
-                SizedBox(height: 20,),
-                Text('Sign In',style: TextStyle(
+                const SizedBox(height: 20,),
+                const Text('Sign In',style: TextStyle(
                   fontSize: 40,
                   fontFamily: 'SecondFont',
 
                 ),),
-                SizedBox(height: 20,),
+                const SizedBox(height: 20,),
                 CustomTextfield(Controller: nameController, hintText: 'Enter your name'),
-                SizedBox(height: 20,),
-                Container(
+                const SizedBox(height: 20,),
+                SizedBox(
                   width: 280,
                   child: TextField(
                     controller: passwordController,
@@ -81,14 +83,14 @@ class logIn_screen extends StatelessWidget{
 
                   ),
                 ),
-                SizedBox(height: 20,),
-                Container(
+                const SizedBox(height: 20,),
+                SizedBox(
                   width: 150,
                   child: ElevatedButton(onPressed: (){
                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
-                      return first_screen();
+                      return const first_screen();
                     }));
-                  }, child: Text('Sign In',style: TextStyle(
+                  }, child: const Text('Sign In',style: TextStyle(
                       fontSize: 20,
                       fontFamily: 'SecondFont'
                   ),)),

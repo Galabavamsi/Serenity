@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:serenity_app/Screens/know_your_stress_score/question_5.dart';
@@ -8,6 +7,8 @@ import '../../Custom_widgets/custom_valueButton.dart';
 import '../../provider/StressCalculator.dart';
 
 class Question4 extends StatelessWidget{
+  const Question4({super.key});
+
   @override
   Widget build(BuildContext context) {
 
@@ -17,7 +18,7 @@ class Question4 extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pink.shade50,
-        title: Text('Know your Stress Score',style: TextStyle(
+        title: const Text('Know your Stress Score',style: TextStyle(
             fontFamily: 'SecondFont'
         ),),
       ),
@@ -29,7 +30,7 @@ class Question4 extends StatelessWidget{
               margin: const EdgeInsets.only(top: 10),
               width: screenWidth*0.9,
               height: screenHeight*0.9,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(25),topRight: Radius.circular(25)),
                 boxShadow: [
@@ -44,13 +45,13 @@ class Question4 extends StatelessWidget{
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    child: Text('Question 4',style: TextStyle(
+                    child: const Text('Question 4',style: TextStyle(
                         fontSize: 35,
                         fontFamily: 'SecondFont'
                     ),),
                   ),
                   SizedBox(height: screenHeight*0.02,),
-                  Text('How often do you find it challenging to focus or stay present?',
+                  const Text('How often do you find it challenging to focus or stay present?',
                     style: TextStyle(
                       fontFamily: 'ThirdFont',
                       fontSize: 23,
@@ -80,7 +81,7 @@ class Question4 extends StatelessWidget{
                   SizedBox(height: screenHeight*0.02,),
                   CustomOutlinedButton(onPressed: (){
                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
-                      return Question5();
+                      return const Question5();
                     }));
                   }, data: 'Next')
                 ],
