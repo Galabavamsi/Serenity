@@ -8,7 +8,7 @@ import 'package:serenity_app/Screens/know_your_stress_score/question_1_screen.da
 import 'package:serenity_app/Screens/self_care/self_care.dart';
 import '../Custom_widgets/custom_outlinedButton.dart';
 
-class HomeScreen extends StatelessWidget{
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
@@ -18,9 +18,10 @@ class HomeScreen extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pink.shade50,
-        title: const Text('SERENITY',style: TextStyle(
-            fontFamily: 'SecondFont'
-        ),),
+        title: const Text(
+          'SERENITY',
+          style: TextStyle(fontFamily: 'SecondFont'),
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -28,11 +29,13 @@ class HomeScreen extends StatelessWidget{
           child: Center(
             child: Container(
               margin: const EdgeInsets.only(top: 50),
-              width: screenWidth*0.9,
-              height: screenHeight*0.8,
+              width: screenWidth * 0.9,
+              height: screenHeight * 0.8,
               decoration: const BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(25),topRight: Radius.circular(25)),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(25),
+                    topRight: Radius.circular(25)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black26, // Shadow color
@@ -44,40 +47,52 @@ class HomeScreen extends StatelessWidget{
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CustomOutlinedButton(onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context){
-                      return const Question1();
-                    }));
-                  }, data: 'Know Your Stress score'),
-                  CustomOutlinedButton(onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context){
-                      return const FaceTracking();
-                    }));
-                  }, data: 'Know Your Mood'),
-                  CustomOutlinedButton(onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context){
-                      return const Habits();
-                    }));
-                  }, data: 'Habits'),
-                  CustomOutlinedButton(onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context){
-                      return const SelfCare();
-                    }));
-                  }, data: 'Self care'),
-                  CustomOutlinedButton(onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context){
-                      return const CallExpert();
-                    }));
-                  }, data: 'Call An Expert'),
+                  CustomOutlinedButton(
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return const Question1();
+                        }));
+                      },
+                      data: 'Know Your Stress score'),
+                  CustomOutlinedButton(
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return const FaceTracking();
+                        }));
+                      },
+                      data: 'Know Your Mood'),
+                  CustomOutlinedButton(
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return const Habits();
+                        }));
+                      },
+                      data: 'Habits'),
+                  CustomOutlinedButton(
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return const SelfCare();
+                        }));
+                      },
+                      data: 'Self care'),
+                  CustomOutlinedButton(
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return const CallExpert();
+                        }));
+                      },
+                      data: 'Call An Expert'),
                 ],
               ),
             ),
           ),
-
         ),
       ),
-
     );
   }
-
 }

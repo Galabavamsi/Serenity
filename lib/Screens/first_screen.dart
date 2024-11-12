@@ -5,15 +5,15 @@ import 'package:serenity_app/Screens/home_screen.dart';
 import 'package:serenity_app/Screens/list_main_screen.dart';
 import 'package:serenity_app/Screens/profile_main_screen.dart';
 
-class first_screen extends StatefulWidget{
-  const first_screen({super.key});
+class FirstScreen extends StatefulWidget{
+  const FirstScreen({super.key});
 
 
   @override
-  State<first_screen> createState() => _first_screenState();
+  State<FirstScreen> createState() => _FirstScreenState();
 }
 
-class _first_screenState extends State<first_screen> {
+class _FirstScreenState extends State<FirstScreen> {
   int _currentIndex = 0;
   final List<Widget> _pages = [
     const HomeScreen(),
