@@ -16,7 +16,7 @@ class CustomTextfield extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 280, // You can adjust the width based on your design needs
       child: TextField(
         controller: controller,

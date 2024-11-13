@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:logger/logger.dart';
 
-
 class FirebaseUserAuth {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -75,9 +74,39 @@ class FirebaseUserAuth {
     }
   }
 
-  // Update Username
-  Future<String?> updateUsername(String newUsername) async {
+  // Re-authenticate User (current password verification)
+  Future<String?> reauthenticateUser(String currentPassword) async {
     try {
+      User? user = _auth.currentUser;
+      if (user != null) {
+        // Create a credential using the current password
+        AuthCredential credential = EmailAuthProvider.credential(
+          email: user.email!,
+          password: currentPassword,
+        );
+
+        // Reauthenticate the user
+        await user.reauthenticateWithCredential(credential);
+        return null; // Re-authentication successful
+      }
+      return 'No user is currently signed in';
+    } on FirebaseAuthException catch (e) {
+      logger.e("Re-authentication failed: $e");
+      if (e.code == 'wrong-password') {
+        return 'Current password is incorrect';
+      }
+      return 'An error occurred. Please try again later';
+    }
+  }
+
+  // Update Username with re-authentication
+  Future<String?> updateUsername(String newUsername, String currentPassword) async {
+    try {
+      String? reAuthResult = await reauthenticateUser(currentPassword);
+      if (reAuthResult != null) {
+        return reAuthResult; // If re-authentication fails, return the error message
+      }
+
       await _auth.currentUser?.updateDisplayName(newUsername);
       await _auth.currentUser?.reload();
 
@@ -94,9 +123,15 @@ class FirebaseUserAuth {
     }
   }
 
-  // Update Password
-  Future<String?> updatePassword(String newPassword) async {
+  // Update Password with re-authentication
+  Future<String?> updatePassword(String newPassword, String currentPassword) async {
     try {
+      String? reAuthResult = await reauthenticateUser(currentPassword);
+      if (reAuthResult != null) {
+        return reAuthResult; // If re-authentication fails, return the error message
+      }
+
+      // Now, update the password after re-authentication
       await _auth.currentUser?.updatePassword(newPassword);
       logger.i("Password updated successfully");
       return null;

@@ -13,7 +13,7 @@ class ProfileScreen extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
 
     // Log out method
-    Future<void> _logout() async {
+    Future<void> logout() async {
       await FirebaseAuth.instance.signOut(); // Sign out from Firebase
       Navigator.pushReplacement(
         context,
@@ -86,7 +86,7 @@ class ProfileScreen extends StatelessWidget {
                   const SizedBox(height: 10),
                   // Log Out Button
                   CustomOutlinedButton(
-                    onPressed: _logout, // Trigger the log out method
+                    onPressed: logout, // Trigger the log out method
                     data: 'Log Out',
                   ),
                 ],

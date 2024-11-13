@@ -7,8 +7,8 @@ import 'package:serenity_app/Custom_widgets/custom_textfield.dart';
 import 'package:serenity_app/Screens/first_screen.dart';
 import 'package:serenity_app/provider/StressCalculator.dart';
 import 'package:serenity_app/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
-import 'Screens/welcome_screen.dart';
-
+import 'package:serenity_app/Screens/welcome_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,8 +41,30 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const WelcomeScreen(),
+        home: const AuthWrapper(), // New AuthWrapper to handle navigation
       ),
+    );
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasData) {
+          // User is signed in, navigate to home screen
+          return const FirstScreen();
+        } else {
+          // No user, navigate to welcome screen
+          return const WelcomeScreen();
+        }
+      },
     );
   }
 }
@@ -152,10 +174,10 @@ class _LogInScreenState extends State<LogInScreen> {
                         child: _isLoading
                             ? CircularProgressIndicator()
                             : const Text(
-                          'Sign In',
-                          style:
-                          TextStyle(fontSize: 20, fontFamily: 'SecondFont'),
-                        ),
+                                'Sign In',
+                                style: TextStyle(
+                                    fontSize: 20, fontFamily: 'SecondFont'),
+                              ),
                       ),
                     ),
                   ],
