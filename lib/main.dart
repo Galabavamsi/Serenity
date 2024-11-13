@@ -9,6 +9,7 @@ import 'package:serenity_app/provider/StressCalculator.dart';
 import 'package:serenity_app/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
 import 'Screens/welcome_screen.dart';
 
+
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (kIsWeb) {

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:serenity_app/Custom_widgets/Custom_Button.dart';
-import 'package:serenity_app/Custom_widgets/custom_textfield.dart';
+import 'package:serenity_app/Custom_widgets/custom_textfield.dart';  // Ensure this import is correct
+import 'package:serenity_app/Custom_widgets/Custom_Button.dart';  // Your custom button import
 import 'package:serenity_app/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
 import 'package:serenity_app/Screens/welcome_screen.dart';
+
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -65,21 +66,43 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
-  Future<void> _deleteAccount() async {
-    String? result = await _auth.deleteAccount();
-    if (result == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Account deleted successfully.")),
-      );
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-            (Route<dynamic> route) => false,
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result)),
-      );
+  Future<void> _confirmAndDeleteAccount() async {
+    bool? confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Confirm Account Deletion"),
+          content: const Text("Are you sure you want to delete your account? This action cannot be undone."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false), // User pressed Cancel
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true), // User pressed Confirm
+              child: const Text("Delete"),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed == true) {
+      String? result = await _auth.deleteAccount();
+      if (result == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Account deleted successfully.")),
+        );
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+              (Route<dynamic> route) => false,
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result)),
+        );
+      }
     }
   }
 
@@ -151,7 +174,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   const SizedBox(height: 20),
                   CustomButton(
                     text: 'Delete Account',
-                    onPressed: _deleteAccount,
+                    onPressed: _confirmAndDeleteAccount,
                   ),
                 ],
               ),
