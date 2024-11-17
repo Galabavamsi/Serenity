@@ -11,7 +11,8 @@ class FirebaseUserAuth {
   Future<String?> signUpWithEmailAndPassword(
       String email, String password, String username) async {
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+      await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -43,8 +44,10 @@ class FirebaseUserAuth {
   }
 
   // Sign-In Method with Firestore User Data Update
-  Future<String?> signInWithEmailAndPassword(String email, String password) async {
+  Future<String?> signInWithEmailAndPassword(
+      String email, String password) async {
     try {
+      // Attempt to sign in with email and password
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
@@ -53,11 +56,13 @@ class FirebaseUserAuth {
       User? user = userCredential.user;
       if (user != null) {
         // Update or create the user document in Firestore
-        await _firestore.collection('users').doc(user.uid).set({
-          'uid': user.uid,
-          'email': email,
-          'lastSignIn': FieldValue.serverTimestamp(), // Update sign-in timestamp
-        }, SetOptions(merge: true)); // Use merge to update only specified fields
+        await _firestore.collection('users').doc(user.uid).set(
+            {
+              'uid': user.uid,
+              'email': email,
+              'lastSignIn': FieldValue.serverTimestamp(), // Update sign-in timestamp
+            },
+            SetOptions(merge: true)); // Use merge to update only specified fields
 
         logger.i("Sign-In successful and user data updated in Firestore: ${user.email}");
       }
@@ -65,14 +70,22 @@ class FirebaseUserAuth {
       return null; // Null indicates success
     } on FirebaseAuthException catch (e) {
       logger.e("Error in sign-in: $e");
+
+      // Handle different FirebaseAuthException error codes
       if (e.code == 'user-not-found') {
-        return 'No user found for this email.';
+        return 'User does not exist. Please check your email or sign up.';
       } else if (e.code == 'wrong-password') {
         return 'Incorrect password. Please try again.';
+      } else if (e.code == 'invalid-email') {
+        return 'The email address is invalid. Please check the format and try again.';
+      } else if (e.code == 'invalid-credential') {
+        return 'The supplied auth credential is incorrect or malformed. Please check the email/password and try again.';
+      } else {
+        return 'An error occurred. Please try again later.';
       }
-      return 'An error occurred. Please try again later.';
     }
   }
+
 
   // Re-authenticate User (current password verification)
   Future<String?> reauthenticateUser(String currentPassword) async {
@@ -100,7 +113,8 @@ class FirebaseUserAuth {
   }
 
   // Update Username with re-authentication
-  Future<String?> updateUsername(String newUsername, String currentPassword) async {
+  Future<String?> updateUsername(
+      String newUsername, String currentPassword) async {
     try {
       String? reAuthResult = await reauthenticateUser(currentPassword);
       if (reAuthResult != null) {
@@ -124,7 +138,8 @@ class FirebaseUserAuth {
   }
 
   // Update Password with re-authentication
-  Future<String?> updatePassword(String newPassword, String currentPassword) async {
+  Future<String?> updatePassword(
+      String newPassword, String currentPassword) async {
     try {
       String? reAuthResult = await reauthenticateUser(currentPassword);
       if (reAuthResult != null) {
@@ -149,10 +164,19 @@ class FirebaseUserAuth {
   // Delete Account
   Future<String?> deleteAccount() async {
     try {
-      await _auth.currentUser?.delete();
-      await _firestore.collection('users').doc(_auth.currentUser?.uid).delete();
-      logger.i("Account deleted successfully");
-      return null;
+      User? user = _auth.currentUser;
+
+      if (user != null) {
+        // First, delete the Firestore document
+        await _firestore.collection('users').doc(user.uid).delete();
+
+        // Then delete the user from Firebase Authentication
+        await user.delete();
+
+        logger.i("Account deleted successfully");
+        return null; // Indicating success
+      }
+      return 'No user is currently signed in';
     } on FirebaseAuthException catch (e) {
       logger.e("Error deleting account: $e");
       if (e.code == 'requires-recent-login') {
@@ -168,7 +192,8 @@ class FirebaseUserAuth {
       User? user = _auth.currentUser;
       if (user != null) {
         // Fetch the username from Firestore
-        DocumentSnapshot userDoc = await _firestore.collection('users').doc(user.uid).get();
+        DocumentSnapshot userDoc =
+        await _firestore.collection('users').doc(user.uid).get();
         if (userDoc.exists) {
           return userDoc['username'] ?? "No username set";
         }
@@ -180,4 +205,98 @@ class FirebaseUserAuth {
       return null; // Handle errors gracefully
     }
   }
+
+  // Add Diary Entry
+  // Add Diary Entry
+  Future<String?> addDiaryEntry(String title) async {
+    try {
+      User? user = _auth.currentUser;
+      if (user != null) {
+        await _firestore.collection('diaryEntries').add({
+          'userId': user.uid,
+          'title': title,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+        logger.i("Diary entry added successfully: $title");
+        return null;
+      }
+      return 'No user is currently signed in.';
+    } on FirebaseException catch (e) {
+      logger.e("Error adding diary entry: $e");
+      return 'Error adding diary entry: ${e.message}';
+    }
+  }
+
+  // Fetch Diary Entries (with date filtering)
+  Future<List<Map<String, dynamic>>> fetchDiaryEntries({int days = 7}) async {
+    try {
+      User? user = _auth.currentUser;
+      if (user == null) {
+        throw Exception("No user is signed in");
+      }
+
+      DateTime cutoffDate = DateTime.now().subtract(Duration(days: days));
+
+      QuerySnapshot snapshot = await _firestore
+          .collection('diaryEntries')
+          .where('userId', isEqualTo: user.uid)
+          .where('createdAt', isGreaterThanOrEqualTo: Timestamp.fromDate(cutoffDate))
+          .orderBy('createdAt', descending: true)
+          .get();
+
+      List<Map<String, dynamic>> entries = snapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return {
+          'id': doc.id,
+          'title': data['title'],
+          'createdAt': data['createdAt']?.toDate().toString() ?? 'Unknown',
+        };
+      }).toList();
+
+      logger.i("Fetched ${entries.length} diary entries for the last $days days");
+      return entries;
+    } catch (e) {
+      logger.e("Error fetching diary entries: $e");
+      throw Exception("Could not fetch diary entries. Please try again later.");
+    }
+  }
+
+  // Update Diary Entry
+  Future<void> updateDiaryEntry(String entryId, String updatedTitle) async {
+    try {
+      User? user = _auth.currentUser;
+      if (user == null) {
+        throw Exception("No user is signed in");
+      }
+
+      await _firestore.collection('diaryEntries').doc(entryId).update({
+        'title': updatedTitle,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+
+      logger.i("Diary entry updated: $entryId");
+    } catch (e) {
+      logger.e("Error updating diary entry: $e");
+      throw Exception("Could not update diary entry. Please try again later.");
+    }
+  }
+
+  // Delete Diary Entry
+  Future<void> deleteDiaryEntry(String entryId) async {
+    try {
+      User? user = _auth.currentUser;
+      if (user == null) {
+        throw Exception("No user is signed in");
+      }
+
+      await _firestore.collection('diaryEntries').doc(entryId).delete();
+
+      logger.i("Diary entry deleted: $entryId");
+    } catch (e) {
+      logger.e("Error deleting diary entry: $e");
+      throw Exception("Could not delete diary entry. Please try again later.");
+    }
+  }
 }
+
+

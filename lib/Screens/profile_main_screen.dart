@@ -23,47 +23,82 @@ class ProfileScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.pink.shade50,
+        backgroundColor: Colors.pink.shade100,
+        elevation: 4.0,
         title: const Text(
           'Profile',
-          style: TextStyle(fontFamily: 'SecondFont'),
+          style: TextStyle(fontFamily: 'SecondFont', fontSize: 24, fontWeight: FontWeight.bold),
         ),
       ),
       body: SingleChildScrollView(
         child: Container(
-          color: Colors.pink.shade50,
+          // Use background image
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/background.jpg'), // Make sure this path matches your assets directory
+              fit: BoxFit.cover, // Make sure the image covers the screen
+              alignment: Alignment.center,
+            ),
+          ),
           child: Center(
             child: Container(
               margin: const EdgeInsets.only(top: 50),
               width: screenWidth * 0.9,
               height: screenHeight * 0.8,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(25),
-                    topRight: Radius.circular(25)),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.white.withOpacity(0.8), Colors.pink.shade50],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+                borderRadius: BorderRadius.circular(30),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black26, // Shadow color
-                    blurRadius: 20, // Softening the shadow
-                    offset: Offset(0, 5), // Positioning the shadow
+                    color: Colors.black26,
+                    blurRadius: 15,
+                    offset: Offset(0, 10),
                   ),
                 ],
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // Profile Picture with Elevated Border
                   CircleAvatar(
                     radius: 75,
+                    backgroundImage: AssetImage('images/main_image.jpg'), // Placeholder image
                     backgroundColor: Colors.pink.shade200,
-                    child: Icon(
-                      Icons.person,
-                      size: 120,
-                      color: Colors.pink.shade50,
-                    ),
                   ),
                   const SizedBox(height: 20),
-                  // Edit Profile Button
+
+                  // User Info (Name, Email) - Optional, add based on the user info stored
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: [
+                        Text(
+                          'User Name', // Add dynamic username here
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.pink.shade800,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'useremail@example.com', // Add dynamic user email here
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.normal,
+                            color: Colors.pink.shade600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+
+                  // Edit Profile Button with ElevatedStyle
                   CustomOutlinedButton(
                     onPressed: () {
                       Navigator.push(
@@ -75,7 +110,8 @@ class ProfileScreen extends StatelessWidget {
                     },
                     data: 'Edit Profile',
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 20),
+
                   // Stress Analysis Button
                   CustomOutlinedButton(
                     onPressed: () {
@@ -83,8 +119,9 @@ class ProfileScreen extends StatelessWidget {
                     },
                     data: 'Stress Analysis',
                   ),
-                  const SizedBox(height: 10),
-                  // Log Out Button
+                  const SizedBox(height: 20),
+
+                  // Log Out Button with ElevatedStyle
                   CustomOutlinedButton(
                     onPressed: logout, // Trigger the log out method
                     data: 'Log Out',

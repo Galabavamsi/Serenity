@@ -17,7 +17,7 @@ class _FirstScreenState extends State<FirstScreen> {
   int _currentIndex = 0;
   final List<Widget> _pages = [
     const HomeScreen(),
-    const ListScreen(),
+     ListScreen(),
     const ProfileScreen(),
   ];
 

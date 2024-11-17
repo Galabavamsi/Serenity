@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const AuthWrapper(), // New AuthWrapper to handle navigation
+        home: const AuthWrapper(),
       ),
     );
   }
@@ -58,10 +58,8 @@ class AuthWrapper extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasData) {
-          // User is signed in, navigate to home screen
           return const FirstScreen();
         } else {
-          // No user, navigate to welcome screen
           return const WelcomeScreen();
         }
       },
@@ -69,7 +67,6 @@ class AuthWrapper extends StatelessWidget {
   }
 }
 
-// Log In Screen with Firebase Sign In
 class LogInScreen extends StatefulWidget {
   const LogInScreen({super.key});
 
@@ -89,7 +86,6 @@ class _LogInScreenState extends State<LogInScreen> {
     final email = _emailController.text;
     final password = _passwordController.text;
 
-    // Basic validation
     if (email.isEmpty || password.isEmpty) {
       setState(() {
         _errorMessage = 'All fields must be filled';
@@ -102,7 +98,6 @@ class _LogInScreenState extends State<LogInScreen> {
       _errorMessage = null;
     });
 
-    // Call Firebase sign-in method
     final result = await _auth.signInWithEmailAndPassword(email, password);
 
     setState(() {
@@ -124,64 +119,128 @@ class _LogInScreenState extends State<LogInScreen> {
       body: Stack(
         children: [
           Container(
-            height: double.infinity,
-            width: double.infinity,
-            color: Colors.pink.shade50,
-            child: Center(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 75,
-                      backgroundColor: Colors.pink.shade200,
-                      child: Icon(
-                        Icons.person,
-                        size: 120,
-                        color: Colors.pink.shade50,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.deepPurple.shade200, Colors.pink.shade100],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+          ),
+          Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 60,
+                    backgroundColor: Colors.white,
+                    child: Icon(
+                      Icons.person,
+                      size: 100,
+                      color: Colors.deepPurple.shade200,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Welcome Back',
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontFamily: 'SecondFont',
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  const Text(
+                    'Sign in to continue',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white70,
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  CustomTextfield(
+                    controller: _emailController,
+                    hintText: 'Email Address',
+                  ),
+                  const SizedBox(height: 20),
+                  CustomTextfield(
+                    controller: _passwordController,
+                    hintText: 'Password',
+                    obscureText: true,
+                  ),
+                  const SizedBox(height: 20),
+                  if (_errorMessage != null)
+                    Text(
+                      _errorMessage!,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        backgroundColor: Colors.deepPurple,
+                      ),
+                      onPressed: _isLoading ? null : _signIn,
+                      child: _isLoading
+                          ? const CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(Colors.white),
+                      )
+                          : const Text(
+                        'Sign In',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Sign In',
-                      style: TextStyle(fontSize: 40, fontFamily: 'SecondFont'),
-                    ),
-                    const SizedBox(height: 20),
-                    // Email input field
-                    CustomTextfield(
-                      controller: _emailController,
-                      hintText: 'Enter your email',
-                    ),
-                    const SizedBox(height: 20),
-                    // Password input field
-                    CustomTextfield(
-                      controller: _passwordController,
-                      hintText: 'Enter your password',
-                      obscureText: true,
-                    ),
-                    const SizedBox(height: 20),
-                    if (_errorMessage != null)
-                      Text(
-                        _errorMessage!,
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    const SizedBox(height: 10),
-                    // Sign In Button
-                    SizedBox(
-                      width: 200,
-                      child: ElevatedButton(
-                        onPressed: _isLoading ? null : _signIn,
-                        child: _isLoading
-                            ? CircularProgressIndicator()
-                            : const Text(
-                                'Sign In',
-                                style: TextStyle(
-                                    fontSize: 20, fontFamily: 'SecondFont'),
-                              ),
+                  ),
+                  const SizedBox(height: 15),
+                  GestureDetector(
+                    onTap: () {
+                      // Handle forgot password tap
+                    },
+                    child: const Text(
+                      'Forgot Password?',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                        decoration: TextDecoration.underline,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Don't have an account?",
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                      const SizedBox(width: 5),
+                      GestureDetector(
+                        onTap: () {
+                          // Handle sign-up navigation
+                        },
+                        child: const Text(
+                          'Sign Up',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),

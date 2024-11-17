@@ -24,9 +24,7 @@ class WelcomeScreen extends StatelessWidget {
                   style: TextStyle(fontFamily: 'SecondFont', fontSize: 40),
                 ),
               ),
-              const SizedBox(
-                height: 30,
-              ),
+              const SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -34,39 +32,40 @@ class WelcomeScreen extends StatelessWidget {
                     width: 250,
                     height: 250,
                     decoration: const BoxDecoration(
-                        image: DecorationImage(
-                      image: AssetImage("assets/images/serenity_logo.png"),
-                    )),
+                      image: DecorationImage(
+                        image: AssetImage("assets/images/serenity_logo.png"),
+                      ),
+                    ),
                   )
                 ],
               ),
-              const SizedBox(
-                height: 75,
-              ),
+              const SizedBox(height: 75),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CustomButton(
+                  Expanded(
+                    child: CustomButton(
                       text: 'Create account',
                       onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
                           return CreateAccount();
                         }));
-                      }),
-                  const SizedBox(
-                    width: 10,
+                      },
+                    ),
                   ),
-                  CustomButton(
+                  const SizedBox(width: 10), // Adjusted space between buttons
+                  Expanded(
+                    child: CustomButton(
                       text: 'Sign in',
                       onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
                           return LogInScreen();
                         }));
-                      })
+                      },
+                    ),
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),

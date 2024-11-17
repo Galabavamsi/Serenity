@@ -38,7 +38,8 @@ class _CreateAccountState extends State<CreateAccount> {
     });
 
     // Attempt sign-up
-    final result = await _auth.signUpWithEmailAndPassword(email, password, username);
+    final result =
+    await _auth.signUpWithEmailAndPassword(email, password, username);
 
     setState(() {
       _isLoading = false;
@@ -46,7 +47,8 @@ class _CreateAccountState extends State<CreateAccount> {
     });
 
     if (result == null) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const FirstScreen()));
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const FirstScreen()));
     }
   }
 
@@ -56,40 +58,119 @@ class _CreateAccountState extends State<CreateAccount> {
       body: Stack(
         children: [
           Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: Colors.pink.shade50,
-            child: Center(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 75,
-                      backgroundColor: Colors.pink.shade200,
-                      child: Icon(Icons.person, size: 120, color: Colors.pink.shade50),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.deepPurple.shade200, Colors.pink.shade100],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+          ),
+          Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 60,
+                    backgroundColor: Colors.white,
+                    child: Icon(
+                      Icons.person_add,
+                      size: 100,
+                      color: Colors.deepPurple.shade200,
                     ),
-                    const SizedBox(height: 20),
-                    const Text('Create Account', style: TextStyle(fontSize: 40, fontFamily: 'SecondFont')),
-                    const SizedBox(height: 20),
-                    CustomTextfield(controller: _usernameController, hintText: 'Username'),
-                    const SizedBox(height: 20),
-                    CustomTextfield(controller: _emailController, hintText: 'Email'),
-                    const SizedBox(height: 20),
-                    CustomTextfield(controller: _passwordController, hintText: 'Create a password', obscureText: true),
-                    const SizedBox(height: 20),
-                    if (_errorMessage != null)
-                      Text(_errorMessage!, style: TextStyle(color: Colors.red)),
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      width: 200,
-                      child: ElevatedButton(
-                        onPressed: _isLoading ? null : _signUp,
-                        child: _isLoading ? CircularProgressIndicator() : Text('Create account', style: TextStyle(fontSize: 20, fontFamily: 'SecondFont')),
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Create Account',
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontFamily: 'SecondFont',
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  const Text(
+                    'Join us and get started',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white70,
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  CustomTextfield(
+                    controller: _usernameController,
+                    hintText: 'Username',
+                  ),
+                  const SizedBox(height: 20),
+                  CustomTextfield(
+                    controller: _emailController,
+                    hintText: 'Email Address',
+                  ),
+                  const SizedBox(height: 20),
+                  CustomTextfield(
+                    controller: _passwordController,
+                    hintText: 'Create a password',
+                    obscureText: true,
+                  ),
+                  const SizedBox(height: 20),
+                  if (_errorMessage != null)
+                    Text(
+                      _errorMessage!,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        backgroundColor: Colors.deepPurple,
+                      ),
+                      onPressed: _isLoading ? null : _signUp,
+                      child: _isLoading
+                          ? const CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(Colors.white),
+                      )
+                          : const Text(
+                        'Create Account',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 15),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Already have an account?',
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                      const SizedBox(width: 5),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text(
+                          'Sign In',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),

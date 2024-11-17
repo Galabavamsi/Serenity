@@ -145,6 +145,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
+  // Inside _EditProfileScreenState class
+
   Future<void> _confirmAndDeleteAccount() async {
     bool? confirmed = await showDialog<bool>(
       context: context,
@@ -184,6 +186,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
