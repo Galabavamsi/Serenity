@@ -3,38 +3,29 @@ import 'package:flutter/material.dart';
 class CustomButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
-  final IconData? icon; // Optional icon
-  final ButtonStyle? style; // Optional custom style
+  final Color? color; // Add the color parameter
 
   const CustomButton({
     super.key,
     required this.text,
     required this.onPressed,
-    this.icon,
-    this.style,
+    this.color, // Initialize the color parameter
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 200, // Fixed width for uniformity
-      child: ElevatedButton.icon(
-        onPressed: onPressed,
-        style: style ?? ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 12),
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color ?? Theme.of(context).primaryColor, // Use the backgroundColor parameter
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
         ),
-        icon: icon != null
-            ? Icon(icon, size: 20) // Optional icon rendering
-            : const SizedBox.shrink(),
-        label: Text(
-          text,
-          style: const TextStyle(
-            fontSize: 18,
-            fontFamily: 'SecondFont',
-          ),
-          overflow: TextOverflow.ellipsis, // Prevents text overflow
-          maxLines: 1, // Ensures text stays on one line
-        ),
+      ),
+      onPressed: onPressed,
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 16),
       ),
     );
   }

@@ -71,7 +71,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
 
-                  // User Info (Name, Email) - Optional, add based on the user info stored
+                  // User Info (Name) - Optional, add based on the user info stored
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Column(
@@ -82,15 +82,6 @@ class ProfileScreen extends StatelessWidget {
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
                             color: Colors.pink.shade800,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'useremail@example.com', // Add dynamic user email here
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.normal,
-                            color: Colors.pink.shade600,
                           ),
                         ),
                       ],

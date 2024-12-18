@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:intl/intl.dart';
+import 'package:serenity_app/user_auth/firebase_auth_implementation/firebase_auth_services.dart'; // Import the FirebaseUserAuth class
 
 class ListScreen extends StatefulWidget {
   const ListScreen({super.key});
@@ -9,7 +11,47 @@ class ListScreen extends StatefulWidget {
 }
 
 class _ListScreenState extends State<ListScreen> with TickerProviderStateMixin {
-  List<Map<String, String>> entries = []; // List to hold diary entries with title and date
+  List<Map<String, dynamic>> entries = []; // List to hold diary entries with title and date
+  final FirebaseUserAuth _authService = FirebaseUserAuth(); // Instance of FirebaseUserAuth
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchEntries();
+  }
+
+  String categorizeEntry(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final difference = today.difference(date).inDays;
+
+    if (difference == 0) {
+      return 'Today';
+    } else if (difference == 1) {
+      return 'Yesterday';
+    } else if (difference <= 7) {
+      return 'Last 7 Days';
+    } else if (difference <= 30) {
+      return 'Last 30 Days';
+    } else {
+      return DateFormat('MMMM yyyy').format(date);
+    }
+  }
+
+  void _fetchEntries() async {
+    List<Map<String, dynamic>> fetchedEntries = await _authService.fetchDiaryEntries();
+    setState(() {
+      entries = fetchedEntries.map((entry) {
+        final date = DateTime.parse(entry['date']);
+        return {
+          'id': entry['id'],
+          'title': entry['title'],
+          'date': entry['date'],
+          'category': categorizeEntry(date),
+        };
+      }).toList();
+    });
+  }
 
   void addEntry() {
     _showEntryDialog();
@@ -19,15 +61,15 @@ class _ListScreenState extends State<ListScreen> with TickerProviderStateMixin {
     _showEntryDialog(entry: entries[index], index: index);
   }
 
-  void deleteEntry(int index) {
+  void deleteEntry(int index) async {
+    await _authService.deleteDiaryEntry(entries[index]['id']!);
     setState(() {
       entries.removeAt(index);
     });
   }
 
-  void _showEntryDialog({Map<String, String>? entry, int? index}) {
-    TextEditingController controller =
-    TextEditingController(text: entry?['title'] ?? "");
+  void _showEntryDialog({Map<String, dynamic>? entry, int? index}) {
+    TextEditingController controller = TextEditingController(text: entry?['title'] ?? "");
 
     showDialog(
       context: context,
@@ -46,23 +88,16 @@ class _ListScreenState extends State<ListScreen> with TickerProviderStateMixin {
               child: Text('Cancel'),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 if (controller.text.isNotEmpty) {
-                  setState(() {
-                    if (entry == null) {
-                      // Add new entry
-                      entries.add({
-                        'title': controller.text,
-                        'date': DateTime.now().toString().split(' ')[0], // Current date
-                      });
-                    } else if (index != null) {
-                      // Update existing entry
-                      entries[index] = {
-                        'title': controller.text,
-                        'date': entry['date']!,
-                      };
-                    }
-                  });
+                  if (entry == null) {
+                    // Add new entry
+                    await _authService.addDiaryEntry(controller.text, DateTime.now().toString().split(' ')[0]);
+                  } else if (index != null) {
+                    // Update existing entry
+                    await _authService.updateDiaryEntry(entries[index]['id']!, controller.text);
+                  }
+                  _fetchEntries();
                   Navigator.pop(context);
                 }
               },
@@ -78,6 +113,11 @@ class _ListScreenState extends State<ListScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
+
+    Map<String, List<Map<String, dynamic>>> categorizedEntries = {};
+    for (var entry in entries) {
+      categorizedEntries.putIfAbsent(entry['category'], () => []).add(entry);
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -131,38 +171,55 @@ class _ListScreenState extends State<ListScreen> with TickerProviderStateMixin {
                   : AnimationLimiter(
                 child: ListView.separated(
                   padding: const EdgeInsets.all(16.0),
-                  itemCount: entries.length,
+                  itemCount: categorizedEntries.length,
                   itemBuilder: (context, index) {
-                    final entry = entries[index];
-                    return AnimationConfiguration.staggeredList(
-                      position: index,
-                      duration: const Duration(milliseconds: 500),
-                      child: SlideAnimation(
-                        verticalOffset: 50.0,
-                        child: FadeInAnimation(
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.pink.shade100,
-                              child: Icon(Icons.book, color: Colors.white),
-                            ),
-                            title: Text(entry['title']!),
-                            subtitle: Text('Date: ${entry['date']}'),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.edit, color: Colors.blue),
-                                  onPressed: () => updateEntry(index),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.delete, color: Colors.red),
-                                  onPressed: () => deleteEntry(index),
-                                ),
-                              ],
-                            ),
+                    final category = categorizedEntries.keys.elementAt(index);
+                    final categoryEntries = categorizedEntries[category]!;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          category,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.pink.shade200,
                           ),
                         ),
-                      ),
+                        ...categoryEntries.map((entry) {
+                          return AnimationConfiguration.staggeredList(
+                            position: index,
+                            duration: const Duration(milliseconds: 500),
+                            child: SlideAnimation(
+                              verticalOffset: 50.0,
+                              child: FadeInAnimation(
+                                child: ListTile(
+                                  leading: CircleAvatar(
+                                    backgroundColor: Colors.pink.shade100,
+                                    child: Icon(Icons.book, color: Colors.white),
+                                  ),
+                                  title: Text(entry['title']!),
+                                  subtitle: Text('Date: ${entry['date']}'),
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.edit, color: Colors.blue),
+                                        onPressed: () => updateEntry(entries.indexOf(entry)),
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.delete, color: Colors.red),
+                                        onPressed: () => deleteEntry(entries.indexOf(entry)),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                        Divider(color: Colors.grey.shade300, thickness: 1),
+                      ],
                     );
                   },
                   separatorBuilder: (context, index) => Divider(

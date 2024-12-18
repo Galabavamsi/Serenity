@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:serenity_app/Screens/call_an_expert/call_expert.dart';
 import 'package:serenity_app/Screens/habits/habits.dart';
 import 'package:serenity_app/Screens/know_your_mood/face_tracking_screen.dart';
-import 'package:serenity_app/Screens/know_your_stress_score/question_1_screen.dart';
+import 'package:serenity_app/Screens/know_your_stress_score/question_0.dart';
 import 'package:serenity_app/Screens/self_care/self_care.dart';
 import 'package:serenity_app/Screens/chatbot_screen.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:serenity_app/Screens/exercise/exercise.dart'; // Import the exercise screen
 
 // HomeScreen Class
 class HomeScreen extends StatelessWidget {
@@ -62,7 +62,7 @@ class HomeScreen extends StatelessWidget {
                 // Header Section
                 Container(
                   padding:
-                      const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+                  const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
                       colors: [Colors.purple, Colors.pink],
@@ -103,11 +103,11 @@ class HomeScreen extends StatelessWidget {
                   icon: Icons.self_improvement,
                   title: "Know Your Stress Score",
                   description:
-                      "Analyze your stress level and get actionable insights.",
+                  "Analyze your stress level and get actionable insights.",
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Question1()),
+                      MaterialPageRoute(builder: (context) => Question0()),
                     );
                   },
                 ),
@@ -115,11 +115,11 @@ class HomeScreen extends StatelessWidget {
                   icon: Icons.mood,
                   title: "Know Your Mood",
                   description:
-                      "Track your mood and understand your feelings better.",
+                  "Track your mood and understand your feelings better.",
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => FaceTracking()),
+                      MaterialPageRoute(builder: (context) => MoodDetectionScreen()),
                     );
                   },
                 ),
@@ -127,7 +127,7 @@ class HomeScreen extends StatelessWidget {
                   icon: Icons.repeat,
                   title: "Habits",
                   description:
-                      "Build healthy habits that stick with you for life.",
+                  "Build healthy habits that stick with you for life.",
                   onTap: () {
                     Navigator.push(
                       context,
@@ -139,7 +139,7 @@ class HomeScreen extends StatelessWidget {
                   icon: Icons.spa,
                   title: "Self Care",
                   description:
-                      "Discover self-care practices tailored to your needs.",
+                  "Discover self-care practices tailored to your needs.",
                   onTap: () {
                     Navigator.push(
                       context,
@@ -151,7 +151,7 @@ class HomeScreen extends StatelessWidget {
                   icon: Icons.phone,
                   title: "Call An Expert",
                   description:
-                      "Talk to mental health experts for personalized advice.",
+                  "Talk to mental health experts for personalized advice.",
                   onTap: () {
                     Navigator.push(
                       context,
@@ -159,30 +159,16 @@ class HomeScreen extends StatelessWidget {
                     );
                   },
                 ),
-                // New Feature Cards for Timers
-                FeatureCard(
-                  icon: Icons.access_alarm,
-                  title: "Meditation Timer",
-                  description:
-                      "Start your meditation session with a relaxing timer.",
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => MeditationTimerScreen()),
-                    );
-                  },
-                ),
+                // New Exercise Feature Card
                 FeatureCard(
                   icon: Icons.fitness_center,
-                  title: "Exercise Timer",
+                  title: "Exercise",
                   description:
-                      "Set your exercise intervals and track progress.",
+                  "Start your exercise session and track your progress.",
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => ExerciseTimerScreen()),
+                      MaterialPageRoute(builder: (context) => ExerciseScreen()),
                     );
                   },
                 ),
@@ -270,223 +256,6 @@ class FeatureCard extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// Meditation Timer Screen
-class MeditationTimerScreen extends StatefulWidget {
-  const MeditationTimerScreen({super.key});
-
-  @override
-  _MeditationTimerScreenState createState() => _MeditationTimerScreenState();
-}
-
-class _MeditationTimerScreenState extends State<MeditationTimerScreen> {
-  final AudioPlayer _audioPlayer = AudioPlayer();
-  int _minutes = 5; // Default meditation time
-  bool _isTimerRunning = false;
-  late Duration _duration;
-  late int _remainingTime;
-
-  @override
-  void initState() {
-    super.initState();
-    _duration = Duration(minutes: _minutes);
-    _remainingTime = _minutes * 60; // Remaining time in seconds
-  }
-
-  void _startTimer() {
-    setState(() {
-      _isTimerRunning = true;
-    });
-
-    // Countdown timer
-    Future.delayed(Duration(seconds: 1), () {
-      if (_remainingTime > 0) {
-        setState(() {
-          _remainingTime--;
-        });
-        _startTimer();
-      } else {
-        _audioPlayer.play(
-            AssetSource('images/relax.mp3')); // Play bell sound when timer ends
-        setState(() {
-          _isTimerRunning = false;
-        });
-      }
-      _audioPlayer.play(AssetSource('images/relax.mp3'));
-    });
-  }
-
-  String _formatTime(int seconds) {
-    int minutes = seconds ~/ 60;
-    int secondsLeft = seconds % 60;
-    return "${minutes.toString().padLeft(2, '0')}:${secondsLeft.toString().padLeft(2, '0')}";
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Meditation")),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Meditation ",
-                style: Theme.of(context).textTheme.headlineSmall),
-            SizedBox(height: 20),
-            Text(_formatTime(_remainingTime),
-                style: Theme.of(context).textTheme.headlineMedium),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _isTimerRunning ? null : _startTimer,
-              child:
-                  Text(_isTimerRunning ? "Timer Running" : "Start Meditation"),
-            ),
-            SizedBox(height: 20),
-            // Slider to change the meditation time
-            Slider(
-              value: _minutes.toDouble(),
-              min: 1,
-              max: 60,
-              divisions: 59,
-              label: "$_minutes min",
-              onChanged: (newValue) {
-                setState(() {
-                  _minutes = newValue.toInt();
-                  _duration = Duration(minutes: _minutes);
-                  _remainingTime = _minutes * 60; // Reset the remaining time
-                });
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// Exercise Timer Screen
-class ExerciseTimerScreen extends StatefulWidget {
-  const ExerciseTimerScreen({super.key});
-
-  @override
-  _ExerciseTimerScreenState createState() => _ExerciseTimerScreenState();
-}
-
-class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
-  final AudioPlayer _audioPlayer = AudioPlayer();
-  int _exerciseTime = 30; // Default exercise time
-  int _restTime = 15; // Default rest time
-  bool _isTimerRunning = false;
-  late Duration _exerciseDuration;
-  late Duration _restDuration;
-  late int _remainingExerciseTime;
-  late int _remainingRestTime;
-
-  @override
-  void initState() {
-    super.initState();
-    _exerciseDuration = Duration(seconds: _exerciseTime);
-    _restDuration = Duration(seconds: _restTime);
-    _remainingExerciseTime = _exerciseTime;
-    _remainingRestTime = _restTime;
-  }
-
-  void _startExercise() {
-    setState(() {
-      _isTimerRunning = true;
-    });
-
-    // Exercise timer countdown
-    Future.delayed(Duration(seconds: 1), () {
-      if (_remainingExerciseTime > 0) {
-        setState(() {
-          _remainingExerciseTime--;
-        });
-        _startExercise();
-      } else {
-        _audioPlayer.play(AssetSource('images/realx.mp3')); // Interval sound
-
-        // Rest timer countdown
-        Future.delayed(Duration(seconds: 1), () {
-          if (_remainingRestTime > 0) {
-            setState(() {
-              _remainingRestTime--;
-            });
-            _startExercise();
-          } else {
-            _audioPlayer.play(AssetSource('images/relax.mp3')); // Rest sound
-            setState(() {
-              _isTimerRunning = false;
-            });
-          }
-        });
-      }
-      _audioPlayer.play(AssetSource('images/relax.mp3'));
-    });
-  }
-
-  String _formatTime(int seconds) {
-    int minutes = seconds ~/ 60;
-    int secondsLeft = seconds % 60;
-    return "${minutes.toString().padLeft(2, '0')}:${secondsLeft.toString().padLeft(2, '0')}";
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Exercise")),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Exercise", style: Theme.of(context).textTheme.headlineSmall),
-            SizedBox(height: 20),
-            Text("Exercise: ${_formatTime(_remainingExerciseTime)}",
-                style: Theme.of(context).textTheme.titleLarge),
-            SizedBox(height: 10),
-            Text("Rest: ${_formatTime(_remainingRestTime)}",
-                style: Theme.of(context).textTheme.titleLarge),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _isTimerRunning ? null : _startExercise,
-              child: Text(_isTimerRunning ? "Timer Running" : "Start Exercise"),
-            ),
-            SizedBox(height: 20),
-            // Sliders to adjust exercise and rest times
-            Slider(
-              value: _exerciseTime.toDouble(),
-              min: 10,
-              max: 180,
-              divisions: 17,
-              label: "$_exerciseTime sec",
-              onChanged: (newValue) {
-                setState(() {
-                  _exerciseTime = newValue.toInt();
-                  _exerciseDuration = Duration(seconds: _exerciseTime);
-                  _remainingExerciseTime = _exerciseTime; // Reset
-                });
-              },
-            ),
-            Slider(
-              value: _restTime.toDouble(),
-              min: 5,
-              max: 60,
-              divisions: 11,
-              label: "$_restTime sec",
-              onChanged: (newValue) {
-                setState(() {
-                  _restTime = newValue.toInt();
-                  _restDuration = Duration(seconds: _restTime);
-                  _remainingRestTime = _restTime; // Reset
-                });
-              },
             ),
           ],
         ),

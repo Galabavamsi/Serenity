@@ -201,18 +201,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       body: SingleChildScrollView(
         child: Container(
           color: Colors.pink.shade50,
+          padding: const EdgeInsets.all(16.0),
           child: Center(
             child: Container(
-              margin: const EdgeInsets.only(top: 50),
-              width: MediaQuery.of(context).size.width * 0.9,
-              height: MediaQuery.of(context).size.height * 0.8,
-              decoration: const BoxDecoration(
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(25),
-                  topRight: Radius.circular(25),
-                ),
-                boxShadow: [
+                borderRadius: BorderRadius.circular(25),
+                boxShadow: const [
                   BoxShadow(
                     color: Colors.black26,
                     blurRadius: 20,
@@ -242,6 +238,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   CustomButton(
                     text: 'Update Username',
                     onPressed: _updateUsername,
+                    color: Colors.pink.shade800, // Set button color
                   ),
                   const SizedBox(height: 20),
                   // Current Password Input
@@ -261,11 +258,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   CustomButton(
                     text: 'Update Password',
                     onPressed: _updatePassword,
+                    color: Colors.pink.shade800, // Set button color
                   ),
                   const SizedBox(height: 20),
                   CustomButton(
                     text: 'Delete Account',
                     onPressed: _confirmAndDeleteAccount,
+                    color: Colors.red, // Set button color
                   ),
                 ],
               ),

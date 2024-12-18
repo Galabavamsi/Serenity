@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:serenity_app/Screens/first_screen.dart'; // Import FirstScreen instead of HomeScreen
+import 'package:serenity_app/Screens/first_screen.dart';
 import 'package:serenity_app/provider/StressCalculator.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class Result extends StatelessWidget {
   const Result({super.key});
@@ -12,38 +13,68 @@ class Result extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
 
     // Provider
-    int totalValue = Provider.of<StressCalculator>(context).totalValue;
+    int depressionValue = Provider.of<StressCalculator>(context).depressionValue * 2;
+    int anxietyValue = Provider.of<StressCalculator>(context).anxietyValue * 2;
+    int stressValue = Provider.of<StressCalculator>(context).stressValue * 2;
 
-    // Stress Calculation Logic
-    String stressRange;
-    Color rangeColor;
-    IconData rangeIcon;
-
-    if (totalValue <= 9 && totalValue >= 5) {
-      stressRange = 'Low Stress';
-      rangeColor = Colors.green;
-      rangeIcon = Icons.sentiment_satisfied;
-    } else if (totalValue >= 10 && totalValue <= 14) {
-      stressRange = 'Moderate Stress';
-      rangeColor = Colors.orange;
-      rangeIcon = Icons.sentiment_neutral;
-    } else if (totalValue >= 15 && totalValue <= 19) {
-      stressRange = 'High Stress';
-      rangeColor = Colors.redAccent;
-      rangeIcon = Icons.sentiment_dissatisfied;
-    } else if (totalValue >= 20 && totalValue <= 25) {
-      stressRange = 'Very High Stress';
-      rangeColor = Colors.red;
-      rangeIcon = Icons.sentiment_very_dissatisfied;
-    } else {
-      stressRange = 'Invalid Input';
-      rangeColor = Colors.grey;
-      rangeIcon = Icons.error;
+    // Result Calculation Logic
+    double getPercentage(int value, int maxLimit) {
+      return (value >= maxLimit) ? 100.0 : (value / maxLimit) * 100;
     }
+
+    String getResultD(int value) {
+      if (value <= 9) {
+        return 'Normal';
+      } else if (value <= 13) {
+        return 'Mild';
+      } else if (value <= 20) {
+        return 'Moderate';
+      } else if (value <= 27) {
+        return 'Severe';
+      } else {
+        return 'Extremely Severe';
+      }
+    }
+
+    String getResultA(int value) {
+      if (value <= 7) {
+        return 'Normal';
+      } else if (value <= 9) {
+        return 'Mild';
+      } else if (value <= 14) {
+        return 'Moderate';
+      } else if (value <= 19) {
+        return 'Severe';
+      } else {
+        return 'Extremely Severe';
+      }
+    }
+
+    String getResultS(int value) {
+      if (value <= 14) {
+        return 'Normal';
+      } else if (value <= 18) {
+        return 'Mild';
+      } else if (value <= 25) {
+        return 'Moderate';
+      } else if (value <= 33) {
+        return 'Severe';
+      } else {
+        return 'Extremely Severe';
+      }
+    }
+
+    double depressionPercentage = getPercentage(depressionValue, 28);
+    double anxietyPercentage = getPercentage(anxietyValue, 20);
+    double stressPercentage = getPercentage(stressValue, 34);
+
+    String depressionResult = getResultD(depressionValue);
+    String anxietyResult = getResultA(anxietyValue);
+    String stressResult = getResultS(stressValue);
 
     return WillPopScope(
       onWillPop: () async {
-        Provider.of<StressCalculator>(context, listen: false).resetValue();
+        Provider.of<StressCalculator>(context, listen: false).resetValues();
         return true;
       },
       child: Scaffold(
@@ -74,68 +105,21 @@ class Result extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Animated Icon
-                  AnimatedContainer(
-                    duration: Duration(seconds: 1),
-                    curve: Curves.easeInOut,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: rangeColor.withOpacity(0.2),
-                    ),
-                    padding: EdgeInsets.all(20),
-                    child: Icon(
-                      rangeIcon,
-                      color: rangeColor,
-                      size: 80,
-                    ),
-                  ),
+                  // Combined Result
+                  _buildCombinedCircularChart(context, depressionPercentage, anxietyPercentage, stressPercentage),
                   SizedBox(height: screenHeight * 0.03),
-                  // Stress Range Text
-                  Text(
-                    'Your Stress Level',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontFamily: 'SecondFont',
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    stressRange,
-                    style: TextStyle(
-                      fontFamily: 'ThirdFont',
-                      fontSize: 27,
-                      fontWeight: FontWeight.bold,
-                      color: rangeColor,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: screenHeight * 0.03),
-                  // Progress Indicator
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: LinearProgressIndicator(
-                      value: totalValue / 25,
-                      minHeight: 10,
-                      backgroundColor: Colors.grey.shade300,
-                      color: rangeColor,
-                    ),
-                  ),
-                  SizedBox(height: screenHeight * 0.05),
                   // Action Button
                   ElevatedButton(
                     onPressed: () {
                       // Navigate back to FirstScreen, which contains the BottomNavigationBar
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => FirstScreen()), // Navigate to FirstScreen
+                        MaterialPageRoute(builder: (context) => FirstScreen()),
                       );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.purple.shade200,
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 40, vertical: 15),
+                      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
@@ -152,8 +136,7 @@ class Result extends StatelessWidget {
                   // Reset Button
                   TextButton(
                     onPressed: () {
-                      Provider.of<StressCalculator>(context, listen: false)
-                          .resetValue();
+                      Provider.of<StressCalculator>(context, listen: false).resetValues();
                       Navigator.pop(context);
                     },
                     child: Text(
@@ -172,4 +155,62 @@ class Result extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildCombinedCircularChart(BuildContext context, double depressionPercentage, double anxietyPercentage, double stressPercentage) {
+    return Column(
+      children: [
+        Text(
+          'Combined Results',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            final snackBar = SnackBar(content: Text('Depression: ${depressionPercentage.toStringAsFixed(1)}%, Anxiety: ${anxietyPercentage.toStringAsFixed(1)}%, Stress: ${stressPercentage.toStringAsFixed(1)}%'));
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          },
+          child: SizedBox(
+            height: 200,
+            width: 200,
+            child: SfCircularChart(
+              series: <CircularSeries>[
+                RadialBarSeries<ChartData, String>(
+                  dataSource: [
+                    ChartData('Depression', depressionPercentage, Colors.red),
+                    ChartData('Anxiety', anxietyPercentage, Colors.orange),
+                    ChartData('Stress', stressPercentage, Colors.blue),
+                  ],
+                  xValueMapper: (ChartData data, _) => data.label,
+                  yValueMapper: (ChartData data, _) => data.value,
+                  pointColorMapper: (ChartData data, _) => data.color,
+                  maximumValue: 100,
+                  innerRadius: '60%',
+                  radius: '100%',
+                  cornerStyle: CornerStyle.bothCurve,
+                  dataLabelSettings: DataLabelSettings(
+                    isVisible: true,
+                    textStyle: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class ChartData {
+  ChartData(this.label, this.value, this.color);
+  final String label;
+  final double value;
+  final Color color;
 }

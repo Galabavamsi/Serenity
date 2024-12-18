@@ -1,149 +1,111 @@
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:camera/camera.dart';
+import 'package:tflite/tflite.dart';
 
-class FaceTracking extends StatefulWidget {
-  const FaceTracking({super.key});
+class MoodDetectionScreen extends StatefulWidget {
+  const MoodDetectionScreen({super.key});
 
   @override
-  State<FaceTracking> createState() => _FaceTrackingState();
+  _MoodDetectionScreenState createState() => _MoodDetectionScreenState();
 }
 
-class _FaceTrackingState extends State<FaceTracking> {
-  CameraController? _cameraController;
-  bool _isCameraInitialized = false;
-  bool _guidelineShown = false;
+class _MoodDetectionScreenState extends State<MoodDetectionScreen> {
+  late CameraController _cameraController;
+  late Future<void> _initializeControllerFuture;
+  bool _isDetecting = false;
+  String _mood = "Unknown";
 
   @override
   void initState() {
     super.initState();
     _initializeCamera();
+    _loadModel();
   }
 
-  Future<void> _initializeCamera() async {
-    final permissionStatus = await Permission.camera.request();
-    if (permissionStatus.isGranted) {
-      final cameras = await availableCameras();
-      // Select the front camera if available
-      final frontCamera = cameras.firstWhere(
-            (camera) => camera.lensDirection == CameraLensDirection.front,
-        orElse: () => cameras.first, // Fallback to the first camera if front is not found
-      );
+  void _initializeCamera() async {
+    final cameras = await availableCameras();
+    final frontCamera = cameras.firstWhere((camera) => camera.lensDirection == CameraLensDirection.front);
 
-      _cameraController = CameraController(frontCamera, ResolutionPreset.medium);
-      await _cameraController?.initialize();
-      setState(() {
-        _isCameraInitialized = true;
-      });
+    _cameraController = CameraController(frontCamera, ResolutionPreset.high);
+    _initializeControllerFuture = _cameraController.initialize();
+    setState(() {});
+  }
 
-      // Show guidelines after the camera is initialized
-      Future.delayed(const Duration(seconds: 1), () {
-        setState(() {
-          _guidelineShown = true;
-        });
-      });
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Camera permission denied'),
-        ),
-      );
-      Navigator.pop(context);
-    }
+  void _loadModel() async {
+    await Tflite.loadModel(
+      model: "assets/face_detection.tflite",
+      labels: "assets/face_labels.txt",
+    );
   }
 
   @override
   void dispose() {
-    _cameraController?.dispose();
+    _cameraController.dispose();
+    Tflite.close();
     super.dispose();
+  }
+
+  void _startMoodDetection() {
+    if (_isDetecting) return;
+
+    _isDetecting = true;
+    _cameraController.startImageStream((CameraImage image) async {
+      try {
+        var recognitions = await Tflite.runModelOnFrame(
+          bytesList: image.planes.map((plane) => plane.bytes).toList(),
+          imageHeight: image.height,
+          imageWidth: image.width,
+          imageMean: 127.5,
+          imageStd: 127.5,
+          rotation: 90,
+          numResults: 1,
+          threshold: 0.5,
+        );
+
+        if (recognitions != null && recognitions.isNotEmpty) {
+          final mood = await _detectMood();
+          setState(() {
+            _mood = mood;
+          });
+        }
+      } catch (e) {
+        print("Error detecting faces: $e");
+      }
+    });
+  }
+
+  Future<String> _detectMood() async {
+    // Example logic to determine mood based on face detection results
+    // This should be replaced with actual mood detection logic
+    return "Happy";
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Set background color to black
-      appBar: AppBar(
-        backgroundColor: Colors.pink.shade50,
-        title: const Text(
-          'Know Your Mood',
-          style: TextStyle(fontFamily: 'SecondFont'),
-        ),
-      ),
-      body: Stack(
-        children: [
-          if (_isCameraInitialized)
-            Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15), // Add rounded corners
-                child: AspectRatio(
-                  aspectRatio: 3 / 4, // Set the aspect ratio to 3:4
-                  child: CameraPreview(_cameraController!),
+      appBar: AppBar(title: Text('Mood Detection')),
+      body: FutureBuilder<void>(
+        future: _initializeControllerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Column(
+              children: [
+                Expanded(child: CameraPreview(_cameraController)),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('Detected Mood: $_mood', style: TextStyle(fontSize: 24)),
                 ),
-              ),
-            )
-          else
-            const Center(
-              child: CircularProgressIndicator(),
-            ),
-          if (_guidelineShown) _buildGuidelineOverlay(),
-        ],
+              ],
+            );
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _startMoodDetection,
+        child: Icon(Icons.camera),
       ),
     );
-  }
-
-  Widget _buildGuidelineOverlay() {
-    return Container(
-      color: Colors.black54,
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              "Smile for 10 seconds!",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontFamily: 'SecondFont',
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                _showSmileMessage();
-              },
-              child: const Text("Start Smiling!"),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _showSmileMessage() async {
-    setState(() {
-      _guidelineShown = false;
-    });
-
-    await Future.delayed(const Duration(seconds: 10), () {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('See how beautiful you look when you smile!'),
-          content: const Text(
-            'Smiling releases endorphins, which make you feel happier and less stressed!',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop(); // Go back to Home Screen
-              },
-              child: const Text('Back to Home'),
-            ),
-          ],
-        ),
-      );
-    });
   }
 }

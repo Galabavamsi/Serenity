@@ -86,7 +86,6 @@ class FirebaseUserAuth {
     }
   }
 
-
   // Re-authenticate User (current password verification)
   Future<String?> reauthenticateUser(String currentPassword) async {
     try {
@@ -206,97 +205,68 @@ class FirebaseUserAuth {
     }
   }
 
-  // Add Diary Entry
-  // Add Diary Entry
-  Future<String?> addDiaryEntry(String title) async {
+  // Add a new diary entry
+  Future<void> addDiaryEntry(String title, String date) async {
     try {
       User? user = _auth.currentUser;
       if (user != null) {
-        await _firestore.collection('diaryEntries').add({
-          'userId': user.uid,
+        await _firestore.collection('users').doc(user.uid).collection('diaryEntries').add({
           'title': title,
+          'date': date,
           'createdAt': FieldValue.serverTimestamp(),
         });
-        logger.i("Diary entry added successfully: $title");
-        return null;
+        logger.i("Diary entry added successfully");
       }
-      return 'No user is currently signed in.';
-    } on FirebaseException catch (e) {
-      logger.e("Error adding diary entry: $e");
-      return 'Error adding diary entry: ${e.message}';
-    }
-  }
-
-  // Fetch Diary Entries (with date filtering)
-  Future<List<Map<String, dynamic>>> fetchDiaryEntries({int days = 7}) async {
-    try {
-      User? user = _auth.currentUser;
-      if (user == null) {
-        throw Exception("No user is signed in");
-      }
-
-      DateTime cutoffDate = DateTime.now().subtract(Duration(days: days));
-
-      QuerySnapshot snapshot = await _firestore
-          .collection('diaryEntries')
-          .where('userId', isEqualTo: user.uid)
-          .where('createdAt', isGreaterThanOrEqualTo: Timestamp.fromDate(cutoffDate))
-          .orderBy('createdAt', descending: true)
-          .get();
-
-      List<Map<String, dynamic>> entries = snapshot.docs.map((doc) {
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        return {
-          'id': doc.id,
-          'title': data['title'],
-          'createdAt': data['createdAt']?.toDate().toString() ?? 'Unknown',
-        };
-      }).toList();
-
-      logger.i("Fetched ${entries.length} diary entries for the last $days days");
-      return entries;
     } catch (e) {
-      logger.e("Error fetching diary entries: $e");
-      throw Exception("Could not fetch diary entries. Please try again later.");
+      logger.e("Error adding diary entry: $e");
     }
   }
 
-  // Update Diary Entry
-  Future<void> updateDiaryEntry(String entryId, String updatedTitle) async {
+  // Update an existing diary entry
+  Future<void> updateDiaryEntry(String entryId, String title) async {
     try {
       User? user = _auth.currentUser;
-      if (user == null) {
-        throw Exception("No user is signed in");
+      if (user != null) {
+        await _firestore.collection('users').doc(user.uid).collection('diaryEntries').doc(entryId).update({
+          'title': title,
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
+        logger.i("Diary entry updated successfully");
       }
-
-      await _firestore.collection('diaryEntries').doc(entryId).update({
-        'title': updatedTitle,
-        'updatedAt': FieldValue.serverTimestamp(),
-      });
-
-      logger.i("Diary entry updated: $entryId");
     } catch (e) {
       logger.e("Error updating diary entry: $e");
-      throw Exception("Could not update diary entry. Please try again later.");
     }
   }
 
-  // Delete Diary Entry
+  // Delete a diary entry
   Future<void> deleteDiaryEntry(String entryId) async {
     try {
       User? user = _auth.currentUser;
-      if (user == null) {
-        throw Exception("No user is signed in");
+      if (user != null) {
+        await _firestore.collection('users').doc(user.uid).collection('diaryEntries').doc(entryId).delete();
+        logger.i("Diary entry deleted successfully");
       }
-
-      await _firestore.collection('diaryEntries').doc(entryId).delete();
-
-      logger.i("Diary entry deleted: $entryId");
     } catch (e) {
       logger.e("Error deleting diary entry: $e");
-      throw Exception("Could not delete diary entry. Please try again later.");
+    }
+  }
+
+  // Fetch all diary entries
+  Future<List<Map<String, dynamic>>> fetchDiaryEntries() async {
+    try {
+      User? user = _auth.currentUser;
+      if (user != null) {
+        QuerySnapshot snapshot = await _firestore.collection('users').doc(user.uid).collection('diaryEntries').orderBy('createdAt', descending: true).get();
+        return snapshot.docs.map((doc) => {
+          'id': doc.id,
+          'title': doc['title'],
+          'date': doc['date'],
+        }).toList();
+      }
+      return [];
+    } catch (e) {
+      logger.e("Error fetching diary entries: $e");
+      return [];
     }
   }
 }
-
-

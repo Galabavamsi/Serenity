@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart'; // Add Lottie for animations
-import 'package:serenity_app/Screens/game/game_screen.dart';
+import 'package:serenity_app/Screens/game/game_screen.dart'; // Import the Bubble Pop game screen
+import 'package:serenity_app/Screens/game/game_screen2.dart'; // Import the Jigsaw Puzzle game screen
 
 class SelfCare extends StatelessWidget {
   const SelfCare({super.key});
@@ -75,7 +76,7 @@ class SelfCare extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.05),
-                // Start Game Button
+                // Start Bubble Pop Game Button
                 ElevatedButton.icon(
                   onPressed: () {
                     Navigator.pushReplacement(context,
@@ -94,7 +95,35 @@ class SelfCare extends StatelessWidget {
                   ),
                   icon: Icon(Icons.play_arrow, size: 28),
                   label: Text(
-                    'Start a Game',
+                    'Bubble Pop Game',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'ThirdFont',
+                    ),
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                // Start Puzzle Game Button
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) {
+                          return JigsawPuzzleGame();
+                        }));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white, backgroundColor: Colors.purple.shade300,
+                    padding: EdgeInsets.symmetric(
+                        vertical: 15, horizontal: screenWidth * 0.2),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    shadowColor: Colors.purple.shade200,
+                  ),
+                  icon: Icon(Icons.extension, size: 28),
+                  label: Text(
+                    'Puzzle Game',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

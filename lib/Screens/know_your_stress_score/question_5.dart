@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:serenity_app/Screens/know_your_stress_score/question_result_screen.dart';
+import 'package:serenity_app/Screens/know_your_stress_score/question_6.dart';
 import 'package:serenity_app/provider/StressCalculator.dart';
 
 class Question5 extends StatefulWidget {
@@ -15,12 +15,12 @@ class _Question5State extends State<Question5> {
 
   void _navigateToNextQuestion(BuildContext context, int rating) {
     // Save the selected rating
-    Provider.of<StressCalculator>(context, listen: false).addRating(rating);
+    Provider.of<StressCalculator>(context, listen: false).addRating(rating, 'd');
 
     // Navigate to the next question
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) =>  Result()),
+      MaterialPageRoute(builder: (context) => const Question6()),
     );
   }
 
@@ -66,7 +66,7 @@ class _Question5State extends State<Question5> {
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: LinearProgressIndicator(
-                      value: 0.2, // Representing progress (20%)
+                      value: 0.238, // Representing progress (50%)
                       color: Colors.pink,
                       backgroundColor: Colors.pink.shade100,
                     ),
@@ -78,7 +78,7 @@ class _Question5State extends State<Question5> {
                   ),
                   const SizedBox(height: 20),
                   const Text(
-                    'How frequently do you feel anxious or tense without a clear reason?',
+                    'I found it difficult to work up the initiative to do things',
                     style: TextStyle(
                       fontFamily: 'ThirdFont',
                       fontSize: 23,
@@ -88,24 +88,24 @@ class _Question5State extends State<Question5> {
                   const SizedBox(height: 20),
                   // Options
                   ...List.generate(
-                    5,
+                    4,
                         (index) => Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: GestureDetector(
                         onTap: () {
                           // On selecting an option, navigate to the next question
-                          _navigateToNextQuestion(context, index + 1);
+                          _navigateToNextQuestion(context, index);
                         },
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           curve: Curves.easeInOut,
                           padding: const EdgeInsets.symmetric(vertical: 15),
                           decoration: BoxDecoration(
-                            color: selectedOption == index + 1
+                            color: selectedOption == index
                                 ? Colors.pink.shade100
                                 : Colors.white,
                             border: Border.all(
-                              color: selectedOption == index + 1
+                              color: selectedOption == index
                                   ? Colors.pink
                                   : Colors.grey,
                               width: 2,
@@ -114,12 +114,12 @@ class _Question5State extends State<Question5> {
                           ),
                           child: Center(
                             child: Text(
-                              _getOptionText(index + 1),
+                              _getOptionText(index),
                               style: TextStyle(
                                 fontSize: 18,
                                 fontFamily: 'ThirdFont',
                                 fontWeight: FontWeight.w600,
-                                color: selectedOption == index + 1
+                                color: selectedOption == index
                                     ? Colors.pink.shade900
                                     : Colors.black,
                               ),
@@ -140,16 +140,14 @@ class _Question5State extends State<Question5> {
 
   String _getOptionText(int index) {
     switch (index) {
+      case 0:
+        return 'Did not apply to me at all';
       case 1:
-        return 'Never';
+        return 'Applied to me to some degree, or some of the time';
       case 2:
-        return 'Rarely';
+        return 'Applied to me to a considerable degree or a good part of time';
       case 3:
-        return 'Sometimes';
-      case 4:
-        return 'Often';
-      case 5:
-        return 'Always';
+        return 'Applied to me very much or most of the time';
       default:
         return '';
     }
